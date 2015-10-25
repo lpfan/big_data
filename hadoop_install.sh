@@ -21,10 +21,27 @@ export PATH=$PATH:$JAVA_HOME:$HADOOP_HOME/bin
 ### check
 ```hadoop version```
 
-### next prepear the namende
+# Hadoop configuration
+sudo vim /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+export JAVA_HOME="/usr/lib/jvm/java-7-oracle"
+### Next edit configuration file. Proper configuration is given in this repo as an example
+```code
+sudo nano core-site.xml
+sudo nano yarn-site.xml
+sudo nano mapred-site.xml
+sudo nano hdfs-site.xml
+```
+
+### Create data- and meta- folders
+```code
+cp
+sudo mkdir -p /usr/local/hadoop/hadoop_data/hdfs/namenode
+sudo mkdir -p /usr/local/hadoop/hadoop_data/hdfs/datanode
+```
+### next prepear the namenode
 hadoop namenode -format
-
-
 
 ### to start hadoop
 /usr/local/hadoop/sbin/start-dfs.sh &&  /usr/local/hadoop/sbin/start-yarn.sh
+### check
+jps
