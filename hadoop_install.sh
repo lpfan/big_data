@@ -20,3 +20,11 @@ export PATH=$PATH:$JAVA_HOME:$HADOOP_HOME/bin
 
 ### check
 ```hadoop version```
+
+### next prepear the namende
+hadoop namenode -format
+
+
+
+### to start hadoop
+/usr/local/hadoop/sbin/start-dfs.sh &&  /usr/local/hadoop/sbin/start-yarn.sh
