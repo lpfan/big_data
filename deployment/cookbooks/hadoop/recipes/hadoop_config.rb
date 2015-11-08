@@ -55,12 +55,12 @@ end
 
 execute 'generate ssh key' do
     user 'hduser'
-    command "ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa"
+    command "ssh-keygen -t dsa -P '' -f /home/hduser/.ssh/id_dsa"
 end
 
 execute 'add ssh key to authorized_keys' do
     user 'hduser'
-    command 'cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys'
+    command 'cat /home/hduser/.ssh/id_dsa.pub >> /home/hduser/.ssh/authorized_keys'
 end
 
 execute 'format hdfs node' do
