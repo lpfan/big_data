@@ -53,6 +53,16 @@ execute 'apply needed permissions for hduser' do
     command 'chown -R hduser:hadoop /usr/local/hadoop'
 end
 
+execute 'generate ssh key' do
+    user 'hduser'
+    command "ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa"
+end
+
+execute 'add ssh key to authorized_keys' do
+    user 'hduser'
+    command 'cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys'
+end
+
 execute 'format hdfs node' do
     user 'hduser'
     command '/usr/local/hadoop/bin/hdfs namenode -format'
