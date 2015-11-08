@@ -18,8 +18,15 @@ user 'hduser' do
     shell '/bin/bash'
     password '$1$oxcUPjfZ$CzejJ8/BfQFR/vPnLtazS/'
     home '/home/hduser'
+    system false
     supports :manage_home => true
-end 
+end
+
+directory '/home/hduser' do
+    owner 'hduser'
+    group 'hduser'
+    action :create
+end
 
 group 'hadoop' do
     action :create
