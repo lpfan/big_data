@@ -58,5 +58,6 @@ execute 'apply needed permissions for hduser' do
 end
 
 execute 'format hdfs node' do
-    command 'hdfs namenode -format'
+    user 'hduser'
+    command '/usr/local/hadoop/bin/hdfs namenode -format'
 end
