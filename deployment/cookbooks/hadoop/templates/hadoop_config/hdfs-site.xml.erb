@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:/media/hadoop/meta/dfs/namenode</value>
+        <description>Determines where on the local filesystem the DFS name node should store
+            the name table(fsimage). If this is a comma-delimited list of directories then the 
+            name table is replicated in all of the directories, for redundancy.
+            :DEFAULT: file://${hadoop.tmp.dir}/dfs/name
+        </description>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:/media/hadoop/data/dfs/datanode</value>
+        <description>Determines where on the local filesystem an DFS data node should store its blocks.
+            If this is a comma-delimited list of directories, then data will be stored in all named directories,
+            typically on different devices. The directories should be tagged with corresponding storage types
+            ([SSD]/[DISK]/[ARCHIVE]/[RAM_DISK]) for HDFS storage policies. The default storage type will be DISK 
+            if the directory does not have a storage type tagged explicitly. Directories that do not exist will 
+            be created if local filesystem permission allows.
+            :DEFAULT: file://${hadoop.tmp.dir}/dfs/data
+        </description>
+    </property>
+</configuration>
