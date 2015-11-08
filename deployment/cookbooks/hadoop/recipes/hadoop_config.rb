@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: hadoop_install
+# Cookbook Name:: hadoop_config
 # Recipe:: hadoop_config
 #
 # Copyright (c) 2015 The Authors, All Rights Reserved.
@@ -15,8 +15,10 @@ template '/usr/local/hadoop/etc/hadoop/hadoop-env.sh' do
     source 'hadoop_config/hadoop-env.sh.erb'
 end
 
-execute 'create hadoop tmp folder' do
-    command 'mkdir -p /media/hadoop/tmp && chown -R hduser:hadoop /hadoop'
+directory '/media/hadoop/tmp' do
+    recursive true
+    owner 'hduser'
+    group 'hadoop'
 end
 
 template '/usr/local/hadoop/etc/hadoop/core-site.xml' do
@@ -35,8 +37,16 @@ execute 'create local directories for Namenode and Datanode' do
     command 'mkdir -p /media/hadoop/meta/dfs/namenode && mkdir -p /media/hadoop/data/dfs/datanode'
 end
 
-execute 'apply needed permissions for hduser' do
-    command 'chown -R hduser:hadoop /media/hadoop'
+directory '/media/hadoop/meta/dfs/namenode' do
+    recursive true
+    owner 'hduser'
+    group 'hadoop'
+end
+
+directory '/media/hadoop/data/dfs/datanode' do
+    recursive true
+    owner 'hduser'
+    group 'hadoop'
 end
 
 execute 'apply needed permissions for hduser' do
