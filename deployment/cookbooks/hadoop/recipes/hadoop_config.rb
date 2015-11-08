@@ -33,6 +33,10 @@ template '/usr/local/hadoop/etc/hadoop/hds-site.xml' do
     source 'hadoop_config/hdfs-site.xml.erb'
 end
 
+template '/usr/local/hadoop/etc/hadoop/yarn-site.xml' do
+    source 'hadoop_config/yarn-site.xml.erb'
+end
+
 execute 'create local directories for Namenode and Datanode' do
     command 'mkdir -p /media/hadoop/meta/dfs/namenode && mkdir -p /media/hadoop/data/dfs/datanode'
 end
