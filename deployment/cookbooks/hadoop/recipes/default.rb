@@ -5,5 +5,5 @@
 # Copyright (c) 2015 The Authors, All Rights Reserved.
 
 
-include_recipe 'hadoop_install'
-include_recipe 'hadoop_config'
+include_recipe 'hadoop::hadoop_install'
+include_recipe 'hadoop::hadoop_config'
