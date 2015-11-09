@@ -55,7 +55,7 @@ end
 
 execute 'generate ssh key' do
     user 'hduser'
-    command "ssh-keygen -t dsa -P '' -f /home/hduser/.ssh/id_dsa"
+    command "ssh-keygen -t dsa -q -P '' -f /home/hduser/.ssh/id_dsa"
 end
 
 execute 'add ssh key to authorized_keys' do
