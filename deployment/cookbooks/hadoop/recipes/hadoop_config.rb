@@ -68,10 +68,6 @@ execute 'format hdfs node' do
     command '/usr/local/hadoop/bin/hdfs namenode -format'
 end
 
-execute 'start NameNode and DataNode daemon' do
-    user 'hduser'
-    command '/usr/local/hadoop/sbin/start-dfs.sh'
-end
 
 execute 'create /user folder at DataNode' do
     user 'hduser'
@@ -81,9 +77,4 @@ end
 execute 'create /user/hduser folder at DataNode' do
     user 'hduser'
     command '/usr/local/hadoop/bin/hdfs dfs -mkdir /user/hduser'
-end
-
-execute 'start yarn' do
-    user 'hduser'
-    command '/usr/local/hadoop/sbin/start-yarn.sh'
 end
