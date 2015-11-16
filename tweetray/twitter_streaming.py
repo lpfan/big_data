@@ -31,8 +31,9 @@ if __name__ == '__main__':
     auth = OAuthHandler(config.TWITTER_CONSUMER_KEY,
                         config.TWITTER_CONSUMER_SECRET)
     auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_SECRET)
-    try:
-        stream = Stream(auth, listener)
-        stream.filter(track=['buzzfeed'])
-    except:
-        pass
+    while True:
+        try:
+            stream = Stream(auth, listener)
+            stream.filter(track=['buzzfeed'])
+        except:
+            continue
