@@ -65,7 +65,7 @@ end
 
 execute 'format hdfs node' do
     user 'hduser'
-    command '/usr/local/hadoop/bin/hdfs namenode -format'
+    command '/usr/local/hadoop/bin/hdfs namenode -format -nonInteractive'
 end
 
 execute 'start NameNode and DataNode daemon' do
