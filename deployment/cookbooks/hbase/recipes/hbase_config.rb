@@ -16,7 +16,7 @@ end
 
 execute 'source user profile' do
     user 'hduser'
-    command 'source ~/.bashrc'
+    command 'source /home/hduser/.bashrc'
 end
 
 template '/usr/local/hbase/conf/hbase-site.xml' do
