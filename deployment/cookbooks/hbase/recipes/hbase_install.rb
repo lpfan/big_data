@@ -13,7 +13,7 @@ remote_file '/tmp/hbase.tar.gz' do
 end
 
 execute 'untar hbase' do
-    command 'mkdir /usr/local/hbase && tar xzf /tmp/hbase.tar.gz -C /usr/local/hadoop --strip-components=1'
+    command 'mkdir /usr/local/hbase && tar xzf /tmp/hbase.tar.gz -C /usr/local/hbase --strip-components=1'
 end
 
 execute 'chown hduser->hbase' do
