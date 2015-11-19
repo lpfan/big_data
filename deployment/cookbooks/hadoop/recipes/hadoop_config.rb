@@ -65,7 +65,7 @@ end
 
 execute 'add localhost ot known_host' do
     user 'hduser'
-    command 'ssh-keyscan -H localhost, 0.0.0.0 >> ~/.ssh/known_hosts'
+    command 'ssh-keyscan -H localhost, 0.0.0.0 >> /home/hduser/.ssh/known_hosts'
 end
 
 execute 'format hdfs node' do
