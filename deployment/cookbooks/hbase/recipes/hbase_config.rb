@@ -14,9 +14,9 @@ template '/home/hduser/.bashrc' do
     group 'hduser'
 end
 
-execute 'source user profile' do
+bash 'source user profile' do
     user 'hduser'
-    command 'source /home/hduser/.bashrc'
+    code 'source /home/hduser/.bashrc'
 end
 
 template '/usr/local/hbase/conf/hbase-site.xml' do
