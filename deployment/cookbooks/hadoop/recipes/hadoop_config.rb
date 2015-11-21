@@ -63,9 +63,14 @@ execute 'add ssh key to authorized_keys' do
     command 'cat /home/hduser/.ssh/id_dsa.pub >> /home/hduser/.ssh/authorized_keys'
 end
 
+execute 'add localhost ot known_host' do
+    user 'hduser'
+    command 'ssh-keyscan -H localhost, 0.0.0.0 >> /home/hduser/.ssh/known_hosts'
+end
+
 execute 'format hdfs node' do
     user 'hduser'
-    command '/usr/local/hadoop/bin/hdfs namenode -format -nonInteractive'
+    command '/usr/local/hadoop/bin/hdfs namenode -format'
 end
 
 execute 'start NameNode and DataNode daemon' do
