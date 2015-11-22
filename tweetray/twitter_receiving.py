@@ -25,7 +25,8 @@ def save_tweet_to_hbase_callback(ch, method, properties, tweet):
         tweets_table.put(row_key, {
             'cf:text': text,
             'cf:user_name': user_name,
-            'cf:user_location': location
+            'cf:user_location': location,
+            'cf:timestam_ms': tweet['timestamp_ms']
         })
         print "[x] tweet %s stored" % row_key
     except Exception:
