@@ -2,27 +2,24 @@ import json
 import sys
 import time
 
-import happybase
+import pika
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 
 import config
 
+rabbit_mq_conn = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+rabbit_mq_channel = rabbit_mq_conn.channel()
+rabbit_mq_channel.queue_declare(queue='tweets')
+
 
 class TweerayListener(StreamListener):
 
-    def __init__(self, api=None, tweets_table=None):
-        super(TweerayListener, self).__init__(api=api)
-        self.tweets_table = tweets_table
-
     def on_data(self, data):
-        tweet = json.loads(data)
-        self.tweets_table.put(tweet['id'], {
-            'cf:text': tweet['text'],
-            'cf:user_name': tweet['user']['name'],
-            'cf:user_location': tweet['user']['location']
-        })
+        rabbit_mq_channel.basic_publish(exchange='', routing_key='tweets', body=data)
+        print " [x] Sent tweet %s to queue" % data
+        # tweet = json.loads(data)
 
     def on_error(self, status):
         print status
@@ -35,10 +32,8 @@ class TweerayListener(StreamListener):
 
 
 def main():
-    track = ['buzzfeed','cnnpolitics', 'hromadsketv', 'espresotv']
-    hbase_conn = happybase.Connection('localhost')
-    tweets_table = hbase_conn.table('tweets')
-    listener = TweerayListener(tweets_table=tweets_table)
+    track = ['buzzfeed']
+    listener = TweerayListener()
     auth = OAuthHandler(config.TWITTER_CONSUMER_KEY,
                         config.TWITTER_CONSUMER_SECRET)
     auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_SECRET)
