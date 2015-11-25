@@ -1,4 +1,3 @@
-import json
 import sys
 import time
 
@@ -11,7 +10,7 @@ import config
 
 rabbit_mq_conn = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 rabbit_mq_channel = rabbit_mq_conn.channel()
-rabbit_mq_channel.queue_declare(queue='tweets')
+rabbit_mq_channel.queue_declare(queue=config.TWEET_QUEUE_NAME)
 
 
 class TweerayListener(StreamListener):
@@ -32,7 +31,6 @@ class TweerayListener(StreamListener):
 
 
 def main():
-    track = ['buzzfeed']
     listener = TweerayListener()
     auth = OAuthHandler(config.TWITTER_CONSUMER_KEY,
                         config.TWITTER_CONSUMER_SECRET)
@@ -40,10 +38,11 @@ def main():
     stream = Stream(auth, listener)
 
     try:
-        stream.filter(track=track)
+        stream.filter(track=config.TRACK_WORDS)
     except:
         print 'error!'
         stream.disconnect()
+        rabbit_mq_conn.close()
 
 if __name__ == '__main__':
     main()
