@@ -1,7 +1,7 @@
 import json
 import multiprocessing
-import os
 
+import happybase
 import pika
 
 import config
@@ -9,9 +9,36 @@ import config
 
 RECIEVED_TWEET_COUNT = 0
 
-def tweet_collector(ch, method, properties, tweet):
-    tweet = json.loads(tweet)
-    print 'recieved tweet %s' % tweet['id']
+def tweet_collector(ch, method, properties, tweet_file):
+    hbase_conn = happybase.Connection('localhost')
+    tweets_table = hbase_conn.table('tweets')
+    print 'start collector'
+    print tweet_file
+
+    # with(tweet_file, 'r') as file:
+    #     tweets = file.readlines()
+
+    #for line in tweets:
+    #    tweet = json.loads(line)
+    #    text = tweet.get('text', '')
+    #    row_key = tweet.get('id_str', '')
+    #    user = tweet.get('user')
+    #    user_name = ''
+    #    location = ''
+    #    if user is not None:
+    #        user_name = user['name']
+    #        location = user.get('user_location', '')
+    #    try:
+    #        tweets_table.put(row_key, {
+    #            'cf:text': text,
+    #            'cf:user_name': user_name,
+    #            'cf:user_location': location,
+    #            'cf:timestam_ms': tweet['timestamp_ms']
+    #        })
+    #        print "[x] tweet %s stored" % row_key
+    #    except Exception:
+    #        pass
+
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def consume():
