@@ -1,3 +1,4 @@
+import codecs
 import json
 import multiprocessing
 import os
@@ -9,13 +10,23 @@ import config
 
 
 def tweet_collector(ch, method, properties, tweet_file):
+    print "[x] start tweets saver"
     hbase_conn = happybase.Connection('localhost')
     tweets_table = hbase_conn.table('tweets')
-    f = open(tweet_file, 'r', encoding='utf-8')
+    print "connection to db established"
+    print "start processing file with tweets %s" % tweet_file
+    f = codecs.open(tweet_file, 'r', encoding='utf-8')
     tweets = f.readlines()
     f.close()
+    print "file with tweets %s readed" % tweet_file
     for line in tweets:
-        tweet = json.loads(line)
+        print line
+        try:
+            tweet = json.loads(line)
+        except Exception as e:
+            print e
+            return
+        print tweet
         text = tweet.get('text', '')
         row_key = tweet.get('id_str', '')
         user = tweet.get('user')
