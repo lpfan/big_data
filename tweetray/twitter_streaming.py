@@ -9,10 +9,6 @@ from tweepy import Stream
 import config
 import utils
 
-rabbit_mq_conn = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-rabbit_mq_channel = rabbit_mq_conn.channel()
-rabbit_mq_channel.queue_declare(queue=config.TWEET_QUEUE_NAME)
-
 
 class TweerayListener(StreamListener):
 
@@ -35,6 +31,9 @@ class TweerayListener(StreamListener):
             self.recieved_tweets = 0
 
             if len(self.temp_files) == config.BUFFERED_TWEETS_FILES_COUNT:
+                rabbit_mq_conn = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+                rabbit_mq_channel = rabbit_mq_conn.channel()
+                rabbit_mq_channel.queue_declare(queue=config.TWEET_QUEUE_NAME)
                 for f in self.temp_files:
                     rabbit_mq_channel.basic_publish(exchange='', routing_key='tweets', body=f)
                 self.temp_files = []

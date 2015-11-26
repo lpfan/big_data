@@ -1,7 +1,9 @@
 import codecs
 import json
+import logging
 import multiprocessing
 import os
+import time
 
 import happybase
 import pika
@@ -9,42 +11,40 @@ import pika
 import config
 
 
+logging.basicConfig(filename=os.path.join(config.LOGS_PATH, 'streamer.log'))
+logger = logging.getLogger(__name__)
+
+
 def tweet_collector(ch, method, properties, tweet_file):
-    print "[x] start tweets saver"
-    hbase_conn = happybase.Connection('localhost')
-    tweets_table = hbase_conn.table('tweets')
-    print "connection to db established"
-    print "start processing file with tweets %s" % tweet_file
-    f = codecs.open(tweet_file, 'r', encoding='utf-8')
-    tweets = f.readlines()
-    f.close()
-    print "file with tweets %s readed" % tweet_file
-    for line in tweets:
-        print line
-        try:
+    try:
+        hbase_conn = happybase.Connection('localhost')
+        tweets_table = hbase_conn.table('tweets')
+        f = codecs.open(tweet_file, 'r', encoding='utf-8')
+        tweets = f.readlines()
+        f.close()
+        for line in tweets:
             tweet = json.loads(line)
-        except Exception as e:
-            print e
-            return
-        print tweet
-        text = tweet.get('text', '')
-        row_key = tweet.get('id_str', '')
-        user = tweet.get('user')
-        user_name = ''
-        location = ''
-        if user is not None:
-            user_name = user['name']
-            location = user.get('user_location', '')
-        try:
-            tweets_table.put(row_key, {
-                'cf:text': text,
-                'cf:user_name': user_name,
-                'cf:user_location': location,
-                'cf:timestam_ms': tweet['timestamp_ms']
-            })
-            print "[x] tweet %s stored" % row_key
-        except Exception:
-            pass
+            text = tweet.get('text', '').encode('utf-8')
+            row_key = tweet.get('id_str', '')
+            user = tweet.get('user')
+            user_name = ''
+            location = ''
+            if user is not None:
+                user_name = user['name'].encode('utf-8')
+                location = user.get('user_location', '').encode('utf-8')
+            try:
+                tweets_table.put(row_key, {
+                    'cf:text': text,
+                    'cf:user_name': user_name,
+                    'cf:user_location': location,
+                    'cf:timestam_ms': tweet.get('timestamp_ms', str(time.time()))
+                })
+            except Exception as e:
+                logger.exception('Error while trying to put tweet {0} into hbase'.format(line), e)
+                continue
+            logging.info('Tweet {0} processed successfully'.format(text))
+    except Exception as e:
+        logger.exception(e)
     os.remove(tweet_file)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 

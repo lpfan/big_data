@@ -18,3 +18,4 @@ TRACK_WORDS = ['buzzfeed', 'putin', 'obama', 'isis']
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TEMP_FILE_PATH = os.path.join(BASE_DIR, 'temp')
+LOGS_PATH = os.path.join(BASE_DIR, 'logs')
