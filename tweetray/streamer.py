@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 import time
 
@@ -55,16 +56,21 @@ class TweerayListener(StreamListener):
 
 def main():
     listener = TweerayListener()
-    auth = OAuthHandler(config.TWITTER_CONSUMER_KEY,
-                        config.TWITTER_CONSUMER_SECRET)
-    auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_SECRET)
-    stream = Stream(auth, listener)
-
-    try:
-        stream.filter(track=config.TRACK_WORDS)
-    except:
-        print 'error!'
-        stream.disconnect()
+    while True:
+    	try:
+    	    auth = OAuthHandler(config.TWITTER_CONSUMER_KEY,
+    	                       config.TWITTER_CONSUMER_SECRET)
+    	    auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_SECRET)
+    	    stream = Stream(auth, listener)
+    	    stream.filter(track=config.TRACK_WORDS)
+    	except KeyboardInterrupt:
+            stream.disconnect()
+	    print '[x] Exiting ...'
+	    break
+	except:
+            print 'error!'
+            stream.disconnect()
+	    continue
 
 if __name__ == '__main__':
     main()
