@@ -12,6 +12,7 @@ end
 package 'ssh'
 package 'default-jdk'
 package 'rsync'
+package 'virtualenv'
 
 user 'hduser' do
     comment 'Create dedicated hadoop user'

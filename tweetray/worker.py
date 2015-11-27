@@ -14,15 +14,17 @@ import config
 
 logging.basicConfig(filename=os.path.join(config.LOGS_PATH, 'workers.log'), level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+pool = happybase.ConnectionPool(size=config.WORKER_COUNT, host='localhost')
 
 
 def tweet_collector(ch, method, properties, tweet_file):
     try:
-        hbase_conn = happybase.Connection('localhost')
-        tweets_table = hbase_conn.table('tweets')
+	with pool.connection() as hbase_conn:
+        	tweets_table = hbase_conn.table('tweets')
         f = codecs.open(tweet_file, 'r', encoding='utf-8')
         tweets = f.readlines()
         f.close()
+	b = tweets_table.batch()
         for line in tweets:
             tweet = json.loads(line)
             text = tweet.get('text', '').encode('utf-8')
@@ -34,7 +36,7 @@ def tweet_collector(ch, method, properties, tweet_file):
                 user_name = user['name'].encode('utf-8')
                 location = user.get('user_location', '').encode('utf-8')
             try:
-                tweets_table.put(row_key, {
+                b.put(row_key, {
                     'cf:text': text,
                     'cf:user_name': user_name,
                     'cf:user_location': location,
@@ -43,10 +45,11 @@ def tweet_collector(ch, method, properties, tweet_file):
             except Exception as e:
                 logger.exception('Error while trying to put tweet {0} into hbase'.format(line))
                 continue
-            logging.info('Tweet {0} processed successfully'.format(text))
+	b.send()
     except Exception as e:
         logger.exception('Exception occured')
     os.remove(tweet_file)
+    hbase_conn.close()
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def consume():
