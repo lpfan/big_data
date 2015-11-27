@@ -65,7 +65,6 @@ def main():
     except:
         print 'error!'
         stream.disconnect()
-        rabbit_mq_conn.close()
 
 if __name__ == '__main__':
     main()

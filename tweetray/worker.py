@@ -11,7 +11,7 @@ import pika
 import config
 
 
-logging.basicConfig(filename=os.path.join(config.LOGS_PATH, 'streamer.log'))
+logging.basicConfig(filename=os.path.join(config.LOGS_PATH, 'workers.log'), level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -40,11 +40,11 @@ def tweet_collector(ch, method, properties, tweet_file):
                     'cf:timestam_ms': tweet.get('timestamp_ms', str(time.time()))
                 })
             except Exception as e:
-                logger.exception('Error while trying to put tweet {0} into hbase'.format(line), e)
+                logger.exception('Error while trying to put tweet {0} into hbase'.format(line))
                 continue
             logging.info('Tweet {0} processed successfully'.format(text))
     except Exception as e:
-        logger.exception(e)
+        logger.exception('Exception occured')
     os.remove(tweet_file)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
