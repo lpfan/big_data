@@ -19,12 +19,12 @@ pool = happybase.ConnectionPool(size=config.WORKER_COUNT, host='localhost')
 
 def tweet_collector(ch, method, properties, tweet_file):
     try:
-	with pool.connection() as hbase_conn:
-        	tweets_table = hbase_conn.table('tweets')
+        with pool.connection() as hbase_conn:
+            tweets_table = hbase_conn.table('tweets')
         f = codecs.open(tweet_file, 'r', encoding='utf-8')
         tweets = f.readlines()
         f.close()
-	b = tweets_table.batch()
+        b = tweets_table.batch()
         for line in tweets:
             tweet = json.loads(line)
             text = tweet.get('text', '').encode('utf-8')
@@ -42,11 +42,11 @@ def tweet_collector(ch, method, properties, tweet_file):
                     'cf:user_location': location,
                     'cf:timestam_ms': tweet.get('timestamp_ms', str(time.time()))
                 })
-            except Exception as e:
+            except Exception:
                 logger.exception('Error while trying to put tweet {0} into hbase'.format(line))
                 continue
-	b.send()
-    except Exception as e:
+        b.send()
+    except Exception:
         logger.exception('Exception occured')
     os.remove(tweet_file)
     hbase_conn.close()

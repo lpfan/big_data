@@ -57,20 +57,20 @@ class TweerayListener(StreamListener):
 def main():
     listener = TweerayListener()
     while True:
-    	try:
-    	    auth = OAuthHandler(config.TWITTER_CONSUMER_KEY,
-    	                       config.TWITTER_CONSUMER_SECRET)
-    	    auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_SECRET)
-    	    stream = Stream(auth, listener)
-    	    stream.filter(track=config.TRACK_WORDS)
-    	except KeyboardInterrupt:
+        try:
+            auth = OAuthHandler(config.TWITTER_CONSUMER_KEY,
+                                config.TWITTER_CONSUMER_SECRET)
+            auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_SECRET)
+            stream = Stream(auth, listener)
+            stream.filter(track=config.TRACK_WORDS)
+        except KeyboardInterrupt:
             stream.disconnect()
-	    print '[x] Exiting ...'
-	    break
-	except:
+            print '[x] Exiting ...'
+            break
+        except:
             print 'error!'
             stream.disconnect()
-	    continue
+            continue
 
 if __name__ == '__main__':
     main()
