@@ -1,5 +1,6 @@
 pika
 tweepy
 ipdb
-happybase
 msgpack-python
+pymongo
+
