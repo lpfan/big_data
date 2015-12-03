@@ -3,4 +3,4 @@ tweepy
 ipdb
 msgpack-python
 pymongo
-
+ujson

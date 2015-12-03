@@ -42,14 +42,14 @@ class TweerayListener(StreamListener):
             self.current_temp_file = utils.generate_temp_file_path()
 
         self.total_processed_tweets += 1
-        print '[x] Total processed tweets {0}'.format(self.total_processed_tweets)
+        print ('[x] Total processed tweets {0}'.format(self.total_processed_tweets))
 
     def on_error(self, status):
-        print status
+        print(status)
         return False
 
     def on_timeout(self):
-        print >> sys.stderr, 'Timeout...'
+        print('Timeout...', file=sys.stderr)
         time.sleep(60)
         return
 
@@ -65,10 +65,10 @@ def main():
             stream.filter(track=config.TRACK_WORDS)
         except KeyboardInterrupt:
             stream.disconnect()
-            print '[x] Exiting ...'
+            print('[x] Exiting ...')
             break
         except:
-            print 'error!'
+            print('error!')
             stream.disconnect()
             continue
 
