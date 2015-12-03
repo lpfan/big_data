@@ -19,3 +19,9 @@ TRACK_WORDS = ['buzzfeed', 'putin', 'obama', 'isis']
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TEMP_FILE_PATH = os.path.join(BASE_DIR, 'temp')
 LOGS_PATH = os.path.join(BASE_DIR, 'logs')
+
+
+MONGO_HOST = 'localhost'
+MONGO_PORT = 27017
+TWITTER_DB = 'twitter'
+RAW_TWEETS_COLLECTION = 'raw_tweets'

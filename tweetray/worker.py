@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 import codecs
-import json
 import logging
 import multiprocessing
 import os
-import time
 
 import pika
 import ujson
@@ -20,18 +18,16 @@ logger = logging.getLogger(__name__)
 def tweet_collector(ch, method, properties, tweet_file):
     try:
         f = codecs.open(tweet_file, 'r', encoding='utf-8')
-        client = MongoClient('localhost', 27017)
+        client = MongoClient(config.MONGO_HOST, config.MONGO_PORT)
         db = client[config.TWITTER_DB]
         collection = db[config.RAW_TWEETS_COLLECTION]
         tweets = f.readlines()
         for tweet in tweets:
-	    collection.insert(uson.loads(tweet))
+            collection.insert(ujson.loads(tweet))
         f.close()
-	
     except Exception:
         logger.exception('Exception occured')
     os.remove(tweet_file)
-    hbase_conn.close()
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def consume():
