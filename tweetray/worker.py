@@ -13,18 +13,19 @@ import config
 
 logging.basicConfig(filename=os.path.join(config.LOGS_PATH, 'workers.log'), level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+client = MongoClient(config.MONGO_HOST, config.MONGO_PORT)
 
 
 def tweet_collector(ch, method, properties, tweet_file):
     try:
         f = codecs.open(tweet_file, 'r', encoding='utf-8')
-        client = MongoClient(config.MONGO_HOST, config.MONGO_PORT)
+        tweets = f.readlines()
+        f.close()
+        print ('read tweets from file')
         db = client[config.TWITTER_DB]
         collection = db[config.RAW_TWEETS_COLLECTION]
-        tweets = f.readlines()
         for tweet in tweets:
             collection.insert(ujson.loads(tweet))
-        f.close()
     except Exception:
         logger.exception('Exception occured')
     os.remove(tweet_file)
@@ -41,15 +42,12 @@ def consume():
     except KeyboardInterrupt:
         pass
 
-worker_pool = multiprocessing.Pool(processes=config.WORKER_COUNT)
+if __name__ == '__main__':
 
-for i in xrange(0, config.WORKER_COUNT):
-    worker_pool.apply_async(consume)
-
-try:
-    while True:
-        continue
-except KeyboardInterrupt:
-    print(' [*] Exiting...')
-    worker_pool.terminate()
-    worker_pool.join()
+    with multiprocessing.Pool(processes=config.WORKER_COUNT) as worker_pool:
+	try:
+	    worker_pool.apply_async(consume)
+	except KeyboardInterrupt:
+	    print(' [*] Exiting...')
+	    worker_pool.terminate()
+	    worker_pool.join()
