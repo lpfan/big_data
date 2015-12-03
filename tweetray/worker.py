@@ -45,9 +45,9 @@ def consume():
 if __name__ == '__main__':
 
     with multiprocessing.Pool(processes=config.WORKER_COUNT) as worker_pool:
-	try:
-	    worker_pool.apply_async(consume)
-	except KeyboardInterrupt:
-	    print(' [*] Exiting...')
-	    worker_pool.terminate()
-	    worker_pool.join()
+        try:
+            worker_pool.apply_async(consume)
+        except KeyboardInterrupt:
+            print(' [*] Exiting...')
+            worker_pool.terminate()
+            worker_pool.join()
