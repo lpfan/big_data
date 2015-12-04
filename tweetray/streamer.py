@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+import os
 import sys
 import time
+import logging
 
 import pika
 from tweepy.streaming import StreamListener
@@ -9,6 +11,10 @@ from tweepy import Stream
 
 import config
 import utils
+
+
+logging.basicConfig(filename=os.path.join(config.LOGS_PATH, 'streamer.log'), level=logging.ERROR)
+logger = logging.getLogger(__name__)
 
 
 class TweerayListener(StreamListener):
@@ -56,21 +62,18 @@ class TweerayListener(StreamListener):
 
 def main():
     listener = TweerayListener()
-    while True:
-        try:
-            auth = OAuthHandler(config.TWITTER_CONSUMER_KEY,
-                                config.TWITTER_CONSUMER_SECRET)
-            auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_SECRET)
-            stream = Stream(auth, listener)
-            stream.filter(track=config.TRACK_WORDS)
-        except KeyboardInterrupt:
-            stream.disconnect()
-            print('[x] Exiting ...')
-            break
-        except:
-            print('error!')
-            stream.disconnect()
-            continue
+    try:
+        auth = OAuthHandler(config.TWITTER_CONSUMER_KEY,
+                            config.TWITTER_CONSUMER_SECRET)
+        auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_SECRET)
+        stream = Stream(auth, listener)
+        stream.filter(track=config.TRACK_WORDS)
+    except KeyboardInterrupt:
+        stream.disconnect()
+        print('[x] Exiting ...')
+    except:
+        print('error!')
+        logger.exception('Stream error occured')
 
 if __name__ == '__main__':
     main()
