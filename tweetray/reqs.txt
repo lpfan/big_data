@@ -4,3 +4,5 @@ ipdb
 msgpack-python
 pymongo
 ujson
+djangorestframework
+django

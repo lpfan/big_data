@@ -36,7 +36,6 @@ class TweerayListener(StreamListener):
             self.recieved_tweets = []
 
         self.total_processed_tweets += 1
-        print ('[x] Total processed tweets {0}'.format(self.total_processed_tweets))
 
     def on_error(self, status):
         print(status)
@@ -55,6 +54,7 @@ def main():
                             config.TWITTER_CONSUMER_SECRET)
         auth.set_access_token(config.TWITTER_ACCESS_TOKEN, config.TWITTER_ACCESS_SECRET)
         stream = Stream(auth, listener)
+        print('I am working ...')
         stream.filter(track=config.TRACK_WORDS)
     except KeyboardInterrupt:
         stream.disconnect()
