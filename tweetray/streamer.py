@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+import logging
 import os
 import sys
 import time
-import logging
+import ujson
 
 import pika
 from tweepy.streaming import StreamListener
@@ -10,7 +11,6 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 
 import config
-import utils
 
 
 logging.basicConfig(filename=os.path.join(config.LOGS_PATH, 'streamer.log'), level=logging.ERROR)
@@ -21,31 +21,20 @@ class TweerayListener(StreamListener):
 
     def __init__(self):
         super(TweerayListener, self).__init__()
-        self.recieved_tweets = 0
-        self.temp_files = []
-        self.current_temp_file = utils.generate_temp_file_path()
+        self.recieved_tweets = ()
         self.total_processed_tweets = 0
 
     def on_data(self, data):
 
-        with open(self.current_temp_file, 'a') as file:
-            file.write(data)
+        tweet = ujson.loads(data)
+        self.recieved_tweets += (tweet,)
 
-        self.recieved_tweets += 1
-
-        if self.recieved_tweets == config.BUFFERED_TWEETS_COUNT:
-            self.temp_files.append(self.current_temp_file)
-            self.recieved_tweets = 0
-
-            if len(self.temp_files) == config.BUFFERED_TWEETS_FILES_COUNT:
-                rabbit_mq_conn = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-                rabbit_mq_channel = rabbit_mq_conn.channel()
-                rabbit_mq_channel.queue_declare(queue=config.TWEET_QUEUE_NAME)
-                for f in self.temp_files:
-                    rabbit_mq_channel.basic_publish(exchange='', routing_key='tweets', body=f)
-                self.temp_files = []
-
-            self.current_temp_file = utils.generate_temp_file_path()
+        if len(self.recieved_tweets) == config.BUFFERED_TWEETS_COUNT:
+            rabbit_mq_conn = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+            rabbit_mq_channel = rabbit_mq_conn.channel()
+            rabbit_mq_channel.queue_declare(queue=config.TWEET_QUEUE_NAME)
+            rabbit_mq_channel.basic_publish(exchange='', routing_key='tweets', body=self.recieved_tweets)
+            self.recieved_tweets = ()
 
         self.total_processed_tweets += 1
         print ('[x] Total processed tweets {0}'.format(self.total_processed_tweets))

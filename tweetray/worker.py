@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-import codecs
 import logging
 import multiprocessing
 import os
 
 import pika
-import ujson
 from pymongo import MongoClient
 
 import config
@@ -15,20 +13,15 @@ logging.basicConfig(filename=os.path.join(config.LOGS_PATH, 'workers.log'), leve
 logger = logging.getLogger(__name__)
 
 
-def tweet_collector(ch, method, properties, tweet_file):
+def tweet_collector(ch, method, properties, tweet_tuple):
     client = MongoClient(config.MONGO_HOST, config.MONGO_PORT)
     try:
-        f = codecs.open(tweet_file, 'r', encoding='utf-8')
-        tweets = f.readlines()
-        f.close()
-        print ('read tweets from file')
         db = client[config.TWITTER_DB]
         collection = db[config.RAW_TWEETS_COLLECTION]
-        for tweet in tweets:
-            collection.insert(ujson.loads(tweet))
+        for tweet in tweet_tuple:
+            collection.insert(tweet)
     except Exception:
         logger.exception('Exception occured')
-    os.remove(tweet_file)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def consume():
