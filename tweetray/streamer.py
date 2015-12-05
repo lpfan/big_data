@@ -21,20 +21,19 @@ class TweerayListener(StreamListener):
 
     def __init__(self):
         super(TweerayListener, self).__init__()
-        self.recieved_tweets = ()
+        self.recieved_tweets = []
         self.total_processed_tweets = 0
 
     def on_data(self, data):
 
-        tweet = ujson.loads(data)
-        self.recieved_tweets += (tweet,)
+        self.recieved_tweets.append(data)
 
         if len(self.recieved_tweets) == config.BUFFERED_TWEETS_COUNT:
             rabbit_mq_conn = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
             rabbit_mq_channel = rabbit_mq_conn.channel()
             rabbit_mq_channel.queue_declare(queue=config.TWEET_QUEUE_NAME)
-            rabbit_mq_channel.basic_publish(exchange='', routing_key='tweets', body=self.recieved_tweets)
-            self.recieved_tweets = ()
+            rabbit_mq_channel.basic_publish(exchange='', routing_key='tweets', body=ujson.dumps(self.recieved_tweets))
+            self.recieved_tweets = []
 
         self.total_processed_tweets += 1
         print ('[x] Total processed tweets {0}'.format(self.total_processed_tweets))
