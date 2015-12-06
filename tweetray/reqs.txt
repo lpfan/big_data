@@ -6,3 +6,4 @@ pymongo
 ujson
 djangorestframework
 django
+drf_ujson

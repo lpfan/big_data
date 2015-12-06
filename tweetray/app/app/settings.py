@@ -121,5 +121,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-MONGODB_HOST = '192.168.1.39'
-MONGODB_PORT = '27017'
+MONGODB_HOST = 'localhost'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+            'drf_ujson.renderers.UJSONRenderer',
+        ),
+}
+
+MONGODB_PORT = 27017
+TWITTER_DB = 'twitter'
+TWITTER_RAW_COLLECTION = 'raw_tweets'

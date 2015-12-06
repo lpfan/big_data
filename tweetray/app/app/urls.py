@@ -21,7 +21,8 @@ from app.api import views
 
 
 router = routers.SimpleRouter(trailing_slash=False)
-router.register(r'v1/tweets/', views.TweetViewSet, base_name='tweet')
+router.register(r'v1/tweets', views.TweetViewSet, base_name='tweet')
+router.register(r'v1/tweets/user/location', views.TweetLocationViewSet, base_name='user_location')
 
 urlpatterns = [
     url(r'^', include(router.urls))
