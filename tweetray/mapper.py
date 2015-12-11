@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from pymongo_hadoop import BSONMApper
+from pymongo_hadoop import BSONMapper
 
 
 def mapper(documents):
@@ -11,4 +11,4 @@ def mapper(documents):
             continue
         yield {'tweet_id': doc['id_str'], 'location': location}
 
-BSONMApper(mapper)
+BSONMapper(mapper)

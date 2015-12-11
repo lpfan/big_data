@@ -5,7 +5,7 @@ from pymongo_hadoop import BSONReducer
 
 
 def reducer(key, values):
-    print('Processing {key}, {values}'.format(key=key, values=values), file=sys.stdout)
+    print 'Processing {key}, {values}'.format(key=key, values=values)
     _count = 0
     for v in values:
         _count += v['count']
