@@ -1,0 +1,10 @@
+name 'tweetray'
+maintainer 'The Authors'
+maintainer_email 'you@example.com'
+license 'all_rights'
+description 'Installs/Configures tweetray'
+long_description 'Installs/Configures tweetray'
+version '0.1.0'
+
+depends 'tar'
+depends 'ssh-util'
