@@ -14,3 +14,6 @@ package "python-virtualenv"
 
 include_recipe "tweetray::hadoop_install"
 include_recipe "tweetray::hadoop_config"
+include_recipe "tweetray::mongodb_config"
+include_recipe "tweetray::spark"
+include_recipe "tweetray::start_app"
