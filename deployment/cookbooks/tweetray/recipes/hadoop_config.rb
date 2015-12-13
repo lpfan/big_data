@@ -6,13 +6,13 @@
 
 
 template '/home/hduser/.bashrc' do
-    source 'hadoop_config/hduser_bashrc.erb'
+    source 'default/hduser_bashrc.erb'
     owner 'hduser'
     group 'hduser'
 end
 
 template '/usr/local/hadoop/etc/hadoop/hadoop-env.sh' do
-    source 'hadoop_config/hadoop-env.sh.erb'
+    source 'default/hadoop-env.sh.erb'
 end
 
 directory '/media/hadoop/tmp' do
@@ -22,19 +22,19 @@ directory '/media/hadoop/tmp' do
 end
 
 template '/usr/local/hadoop/etc/hadoop/core-site.xml' do
-    source 'hadoop_config/core-site.xml.erb'
+    source 'default/core-site.xml.erb'
 end
 
 template '/usr/local/hadoop/etc/hadoop/mapred-site.xml' do
-    source 'hadoop_config/mapred-site.xml.erb'
+    source 'default/mapred-site.xml.erb'
 end
 
 template '/usr/local/hadoop/etc/hadoop/hds-site.xml' do
-    source 'hadoop_config/hdfs-site.xml.erb'
+    source 'default/hdfs-site.xml.erb'
 end
 
 template '/usr/local/hadoop/etc/hadoop/yarn-site.xml' do
-    source 'hadoop_config/yarn-site.xml.erb'
+    source 'default/yarn-site.xml.erb'
 end
 
 directory '/media/hadoop/meta/dfs/namenode' do
@@ -63,9 +63,7 @@ execute 'add ssh key to authorized_keys' do
     command 'cat /home/hduser/.ssh/id_dsa.pub >> /home/hduser/.ssh/authorized_keys'
 end
 
-ssh_known_hosts "localhost" do
-    user 'hadoop'
-end
+ssh_known_hosts_entry "localhost"
 
 execute 'format hdfs node' do
     user 'hduser'

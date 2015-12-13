@@ -7,4 +7,4 @@ long_description 'Installs/Configures tweetray'
 version '0.1.0'
 
 depends 'tar'
-depends 'ssh-util'
+depends 'ssh_known_hosts'

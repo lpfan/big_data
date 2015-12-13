@@ -10,7 +10,7 @@ package "python-dev"
 package "gcc"
 package "rabbitmq-server"
 package "mongodb"
-package "python-virtualenv "
+package "python-virtualenv"
 
 include_recipe "tweetray::hadoop_install"
 include_recipe "tweetray::hadoop_config"
